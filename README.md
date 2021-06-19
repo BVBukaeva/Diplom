@@ -14,17 +14,19 @@
 #### Приложение в собственной СУБД сохраняет информацию о том, каким способом был совершён платёж и успешно ли он был совершён.
 
 ### Запуск Авто-Тестов.
-* Запустить в Docker контейнеры СУБД MySQl, PostgerSQL и Node.js
-* Запустить контейнеры в терминале
-1. Нужно ввести команду в терминале: 
+
+1. Запустить контейнеры в терминале командой: 
 **docker-compose up -d**
-2. Зпускаем SUT, для этого в новой вкладке в терминале вводим следующую команду:
+2. Запускаем SUT, для этого в новой вкладке в терминале вводим следующую команду:
 * Для СУБД MySQL: **java -jar ./artifacts/aqa-shop.jar**
 * Для СУБД PostgreSQL: **java -jar ./artifacts/aqa-shop.jar --spring.datasource.url=jdbc:postgresql://localhost:5432/app**
 3. Запускаем автотесты, следующе командой:
 * Для MySQL:
 **gradlew clean test**
 * Для PostgreSQL: **gradlew clean test -Ddb.url=jdbc:postgresql://localhost:5432/app**
+
+* **P.S.** Дополнительно через  флаг -Dservice.url можно задать адрес для внешнего сервиса для тестирования
+    * например: **gradlew clean test -Ddb.url=jdbc:postgresql://localhost:5432/app -Dservice.url=http://172.168.1.8:8080/**
 4. Сгенерировать отчеты: 
 * **gradlew allureReport**
 * **gradlew allureServ**

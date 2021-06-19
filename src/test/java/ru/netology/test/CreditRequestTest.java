@@ -1,6 +1,7 @@
 package ru.netology.test;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.Description;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.val;
 import org.junit.jupiter.api.*;
@@ -11,6 +12,7 @@ import ru.netology.page.OrderPage;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static ru.netology.data.DataHelper.getPropertyOrDefValue;
 
 public class CreditRequestTest {
 
@@ -21,7 +23,7 @@ public class CreditRequestTest {
 
     @BeforeEach
     void setUp() {
-        open("http://localhost:8080/");
+        open(getPropertyOrDefValue("service.url", "http://localhost:8080/"));
     }
 
     @AfterAll
@@ -30,6 +32,7 @@ public class CreditRequestTest {
     }
 
     @Test
+    @Description("Успешная покупка в кредит")
     void shouldCreditApprovedCard() {
         val cardInfo = new DataHelper().getValidCardInfo("approved");
         val creditPage = new OrderPage().goToCredit();
@@ -40,6 +43,7 @@ public class CreditRequestTest {
     }
 
     @Test
+    @Description("Попытка покупки в кредит по карте с недостаточным балансом")
     void shouldPaymentDeclinedCard() {
         val cardInfo = new DataHelper().getValidCardInfo("declined");
         val creditPage = new OrderPage().goToCredit();
@@ -50,6 +54,7 @@ public class CreditRequestTest {
     }
 
     @Test
+    @Description("Попытка покупки в кредит с невалидными данными #1")
     void shouldGetNotificationInvalidCard() {
         val cardInfo = new DataHelper().getInvalidCardInfo("approved");
         val creditPage = new OrderPage().goToCredit();
@@ -58,6 +63,7 @@ public class CreditRequestTest {
     }
 
     @Test
+    @Description("Попытка покупки в кредит с невалидными данными #2")
     void shouldGetNotificationWrongFormatCard() {
         val cardInfo = new DataHelper().getInvalidFormatCardInfo("4444");
         val creditPage = new OrderPage().goToCredit();
@@ -66,6 +72,7 @@ public class CreditRequestTest {
     }
 
     @Test
+    @Description("Попытка покупки в кредит с незаполненной формой")
     void shouldGetNotificationEmptyOrWrongFormatFields() {
         val creditPage = new OrderPage().goToCredit();
         creditPage.emptyFieldNotification();

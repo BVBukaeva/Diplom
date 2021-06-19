@@ -1,6 +1,7 @@
 package ru.netology.test;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.Description;
 import io.qameta.allure.selenide.AllureSelenide;
 import lombok.val;
 import org.junit.jupiter.api.*;
@@ -11,6 +12,7 @@ import ru.netology.page.OrderPage;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static ru.netology.data.DataHelper.getPropertyOrDefValue;
 
 public class PaymentTest {
 
@@ -21,7 +23,7 @@ public class PaymentTest {
 
     @BeforeEach
     void setUp() {
-        open("http://localhost:8080/");
+        open(getPropertyOrDefValue("service.url", "http://localhost:8080/"));
     }
 
     @AfterAll
@@ -30,6 +32,7 @@ public class PaymentTest {
     }
 
     @Test
+    @Description("Успешная оплата по карте")
     void shouldPaymentApprovedCard() {
         val cardInfo = new DataHelper().getValidCardInfo("approved");
         val paymentPage = new OrderPage().goToPayment();
@@ -41,6 +44,7 @@ public class PaymentTest {
     }
 
     @Test
+    @Description("Попытка оплаты по карте с недостаточным балансом")
     void shouldPaymentDeclinedCard() {
         val cardInfo = new DataHelper().getValidCardInfo("declined");
         val paymentPage = new OrderPage().goToPayment();
@@ -51,6 +55,7 @@ public class PaymentTest {
     }
 
     @Test
+    @Description("Попытка оплаты с невалидными данными #1")
     void shouldGetNotificationInvalidCard() {
         val cardInfo = new DataHelper().getInvalidCardInfo("approved");
         val paymentPage = new OrderPage().goToPayment();
@@ -59,6 +64,7 @@ public class PaymentTest {
     }
 
     @Test
+    @Description("Попытка оплаты с невалидными данными #2")
     void shouldGetNotificationWrongFormatCard() {
         val cardInfo = new DataHelper().getInvalidFormatCardInfo("4444");
         val paymentPage = new OrderPage().goToPayment();
@@ -67,6 +73,7 @@ public class PaymentTest {
     }
 
     @Test
+    @Description("Попытка оплаты с незаполненной формой")
     void shouldGetNotificationEmptyOrWrongFormatFields() {
         val paymentPage = new OrderPage().goToPayment();
         paymentPage.emptyFieldNotification();

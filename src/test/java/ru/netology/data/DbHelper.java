@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
 
+import static ru.netology.data.DataHelper.getPropertyOrDefValue;
+
 public class DbHelper {
     private final QueryRunner runner = new QueryRunner();
     private Properties prop = prop();
@@ -21,15 +23,19 @@ public class DbHelper {
         Properties properties = new Properties();
         try (InputStream is = DbHelper.class.getClassLoader().getResourceAsStream("application.properties")) {
             properties.load(is);
-        } catch(IOException ex) { ex.printStackTrace(); }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         return properties;
     }
 
 
     @SneakyThrows
     private Connection getConnect() {
+        String key = "db.url";
+        String defValue = prop.getProperty("spring.datasource.url");
         return DriverManager.getConnection(
-                prop.getProperty("spring.datasource.url"),
+                getPropertyOrDefValue(key, defValue),
                 prop.getProperty("spring.datasource.username"),
                 prop.getProperty("spring.datasource.password")
         );
